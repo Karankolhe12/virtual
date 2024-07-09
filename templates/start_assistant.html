@@ -1,0 +1,21 @@
+<!-- templates/start_assistant.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant - Assistant's Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Assistant</h1>
+        <div id="assistant-status">
+            <h2>Assistant's Status:</h2>
+            <p id="status">{{ assistant_status }}</p>
+            <h2>Recognized Command:</h2>
+            <p id="command">{{ recognized_command }}</p>
+        </div>
+    </div>
+</body>
+</html>

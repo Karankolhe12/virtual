@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Voice Assistant</h1>
+        <div id="commands">
+            <h2>Available Commands:</h2>
+            <ul>
+                <li>Open Google</li>
+                <li>Tell me the day</li>
+                <li>Tell me the time</li>
+                <li>Search from Wikipedia (e.g., "from Wikipedia Virat Kohli")</li>
+                <li>Ask the assistant's name</li>
+                <li>Say "bye" to exit</li>
+                <li>Play Snake</li>
+                <li>Play Ping Pong</li>
+            </ul>
+            <h2>Assistant's Status:</h2>
+            <p id="assistantStatus">Speak now...</p>
+            <h2>Recognized Command:</h2>
+            <p id="recognizedCommand"></p>
+        </div>
+        <button onclick="startAssistant()">Start Assistant</button>
+        <div id="gameOptions" style="display:none;">
+            <button onclick="selectGame('snake')">Play Snake</button>
+            <button onclick="selectGame('ping pong')">Play Ping Pong</button>
+        </div>
+    </div>
+    <script>
+        function startAssistant() {
+            // Update assistant status to "Listening..."
+            document.getElementById('assistantStatus').innerText = 'Listening...';
+
+            // Fetch recognized command from server
+            fetch('/start_assistant')
+            .then(response => response.json())
+            .then(data => {
+                // Update recognized command
+                document.getElementById('recognizedCommand').innerText = data.response;
+
+                // Show game options if prompted
+                if (data.response.includes('choose one')) {
+                    document.getElementById('gameOptions').style.display = 'block';
+                }
+
+                // Open URL in new tab if provided
+                if (data.url) {
+                    window.open(data.url, '_blank');
+                }
+
+                // Update assistant status to show assistant ready
+                document.getElementById('assistantStatus').innerText = 'Assistant Ready';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function selectGame(gameChoice) {
+            fetch('/play_game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ game_choice: gameChoice }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.response);  // Optional: Show response message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
